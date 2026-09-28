@@ -1,0 +1,135 @@
+<mxfile host="app.diagrams.net" agent="hermes" version="24.7.17">
+  <diagram id="ai-workflow" name="AI workflow">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1350" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="n1" value="&lt;b&gt;Monitor loop&lt;/b&gt;&lt;br&gt;poll price every POLL_INTERVAL_SECONDS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="40" width="260" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="price ≤&lt;br&gt;TARGET_PRICE_USD?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="330" y="130" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="&lt;b&gt;Deterministic checks (code)&lt;/b&gt;&lt;br&gt;SpendTracker caps (daily / lifetime / hourly)&lt;br&gt;USD balance · price drift vs trigger" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="270" y="240" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="Build Jev state&lt;br&gt;market / account / guardrails" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="340" width="260" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" value="&lt;b&gt;OpenRouter Decisions API&lt;/b&gt; — typesafe/jev-1.13&lt;br&gt;one request · questions evaluated in parallel and in isolation" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#9673a6;verticalAlign=top;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="140" y="430" width="560" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="q1" value="&lt;b&gt;noul&lt;/b&gt;&lt;br&gt;caps_exceeded" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="165" y="480" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="q2" value="&lt;b&gt;noul&lt;/b&gt;&lt;br&gt;price_stable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="330" y="480" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="q3" value="&lt;b&gt;noul&lt;/b&gt;&lt;br&gt;funds_available" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="495" y="480" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="q4" value="&lt;b&gt;choice&lt;/b&gt;&lt;br&gt;action ∈ buy / wait / review" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="165" y="548" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="q5" value="&lt;b&gt;score&lt;/b&gt;&lt;br&gt;conviction 1–5 rubric (returned 0–1 + legend)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="390" y="548" width="245" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" value="&lt;b&gt;compose_decision (pure code)&lt;/b&gt;&lt;br&gt;convert score 0–1 → 1–5 rubric · hard overrides from code checks&lt;br&gt;confidence gate (choice → score fallback, default 0.70)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="250" y="660" width="320" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" value="&lt;b&gt;OpenAI Agents SDK run&lt;/b&gt;&lt;br&gt;execution engine only — fixed instructions:&lt;br&gt;confirm price, confirm balance, execute $X order" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="40" y="790" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" value="&lt;b&gt;Notify + log&lt;/b&gt;&lt;br&gt;review flag — NO order" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="310" y="795" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n9" value="&lt;b&gt;Continue polling&lt;/b&gt;&lt;br&gt;wait for next interval" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="540" y="795" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n10" value="tools:&lt;br&gt;get_current_price · get_account_balance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="40" y="900" width="230" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="n11" value="&lt;b&gt;place_buy_order&lt;/b&gt;&lt;br&gt;7 guardrails enforced in-tool:&lt;br&gt;min/max buy · daily cap · lifetime cap · hourly rate&lt;br&gt;balance · drift · human approval" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="40" y="990" width="230" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n12" value="&lt;b&gt;Coinbase Exchange&lt;/b&gt;&lt;br&gt;market buy order" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1110" width="230" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="n13" value="&lt;b&gt;Record + observe&lt;/b&gt;&lt;br&gt;SpendTracker.record · structlog · OTEL spans/metrics · email alert" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1200" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n14" value="&lt;b&gt;Decision provider&lt;/b&gt;&lt;br&gt;DECISION_PROVIDER=dry-run | openrouter&lt;br&gt;DryRunProvider: deterministic, offline, keyless (tests/CI)&lt;br&gt;OpenRouterProvider: real Jev call" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="480" y="1080" width="290" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="n1" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="n2" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="no — keep polling" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="n2" target="n1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="120" y="165" />
+              <mxPoint x="120" y="65" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="n3" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="n4" target="c1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;" edge="1" parent="1" source="c1" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="action=buy &amp;&lt;br&gt;conf ≥ gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="n6" target="n7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="155" y="695" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" value="action=review or&lt;br&gt;conf &lt; gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="n6" target="n8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="action=wait" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="n6" target="n9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="635" y="695" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="n7" target="n10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="n10" target="n11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="order accepted" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="n11" target="n12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="n12" target="n13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" value="next poll" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="n13" target="n1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="810" y="1230" />
+              <mxPoint x="810" y="65" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;entryX=1;entryY=0.5;" edge="1" parent="1" source="n14" target="c1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="810" y="1125" />
+              <mxPoint x="810" y="525" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
