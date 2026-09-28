@@ -36,6 +36,57 @@ compose.py (pure code, deterministic)
         └─ action=wait ─► log, continue polling
 ```
 
+### The Jev question set
+
+Jev is a *decision* model, not a chat model: it receives a typed `state` and a
+set of typed questions, and returns typed answers — no text generation. All 5
+questions below are sent in **one request** to the OpenRouter Decisions API
+(`typesafe/jev-1.13`) and evaluated in parallel and in isolation (no
+context-rot between them).
+
+Three primitive types are used (`agent/jev/questions.py`):
+
+- **noul** (×3) — a yes/no judgment answering "is this true for this state?"
+  Criteria are a record with `true` / `false` entries, each carrying `what`,
+  `not_for`, and `examples`.
+  - `caps_exceeded` — have the spend/rate guardrails already been tripped?
+  - `price_stable` — is drift from the trigger price still small enough to act?
+  - `funds_available` — does the USD balance cover at least a minimum buy?
+
+- **choice** (×1) — pick one option from a fixed set. Criteria are a record
+  mapping each option name to its description.
+  - `action` ∈ `buy` / `wait` / `review` — what should happen with this buy
+    opportunity right now?
+
+- **score** (×1) — rate against a rubric. Criteria are an array of level
+  objects (`what` + `signals`).
+  - `conviction` — 1–5 rubric: how strong is the conviction to buy, given how
+    far below target the price is and how stable it looks?
+
+Answer fields per primitive:
+
+| Primitive | Answer fields | `confidence`? |
+| --- | --- | --- |
+| noul | `noul` (0–1) | never — by API contract |
+| choice | `choice`, `probabilities` | yes |
+| score | `score`, `legend` | yes |
+
+Notes the composer relies on:
+
+- `noul` answers carry no `confidence` — that is expected, not an error. The
+  confidence gate reads confidence only from the `action` (choice) and
+  `conviction` (score) answers, choice first.
+- The live API returns the score primitive as a **0–1 normalized value** with
+  a `legend` mapping that range onto the 1–5 rubric levels (e.g. `0.86` →
+  level 4). `compose_decision` converts it before anything else; the
+  dry-run provider returns the same normalized+legend shape so tests mirror
+  the real contract.
+- Composition: the `noul` signals plus deterministic cap/balance checks
+  (computed in code and passed in as `state`) can hard-block to `review`;
+  otherwise `action` decides and `conviction` sizes the order (converted
+  1–5 value mapped linearly into `[MIN_BUY_USD, MAX_BUY_USD]`, then clamped
+  by caps/balance in code).
+
 Design rules:
 - **Deterministic checks stay in code.** Spend caps, hourly rate, and USD
   balance are computed by `SpendTracker`/`CoinbaseClient` *before* Jev is
