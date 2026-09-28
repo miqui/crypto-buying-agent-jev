@@ -1,5 +1,9 @@
 # crypto-buying-agent-jev
 
+<img width="791" height="1221" alt="jev-crypto drawio" src="https://github.com/user-attachments/assets/0bf19c8b-98ef-4568-b23f-1f5db1147c55" />
+
+
+
 Autonomous crypto price monitoring agent where the **buy decision** is made by
 [TypeSafe Jev (System One)](https://openrouter.ai) via the OpenRouter
 Decisions API, and the [OpenAI Agents Python SDK](https://openai.github.io/openai-agents-python/)
